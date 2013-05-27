@@ -2,7 +2,7 @@
 # Added by Chaobin Tang <cbtchn@gmail.com>
 from datetime import datetime
 
-import request
+import requests
 
 
 class Schedule(object):
