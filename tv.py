@@ -1,20 +1,27 @@
 #!/usr/bin/env python
 # Added by Chaobin Tang <cbtchn@gmail.com>
-from datetime import datetime
 from BeautifulSoup import BeautifulSoup
+from calendar import Calendar
+from datetime import datetime
+from collections import namedtuple
 
 import requests
 
 
 Config = {
     'url_channels': 'http://tv.cntv.cn/epg',
-    'url_schedule':  'http://tv.cntv.cn/index.php?action=epg-list&date=%(date_str)s&channel=%(channel)s'
+    'url_schedule': (
+        'http://tv.cntv.cn/index.php?action=epg-list&date=%(date_str)s&channel=%(channel)s&mode='
+        )
 }
 
-class Schedule(object):
+Program = namedtuple('Program', 'time', 'name')
 
-    def __init__(self, channel_name):
+class Schedule(Calendar):
+
+    def __init__(self, channel_name, firstweekday=0):
         self.channel = channel_name
+        Calendar.__init__(self, firstweekday)
 
     def on_date(self, date_str):
         url_feed = {
@@ -23,7 +30,8 @@ class Schedule(object):
         }
         url = Config['url_schedule'] % url_feed
         response = requests.get(url)
-        print response
+
+    def 
 
 class Channel(dict):
 
@@ -43,9 +51,7 @@ class Channel(dict):
         dict.__setitem__(self, 'schedule', schedule)
 
     def __getattr__(self, attr):
-        if not attr in self.keys():
-            raise KeyError('Channel does not have `%s` attribute' % attr)
-        return self[attr]
+        return dict.__getitem__(self, attr)
 
 class Channels(dict):
 

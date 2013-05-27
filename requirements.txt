@@ -1,3 +1,2 @@
-tvschedules
 requests>=1.2.3
 beautifulsoup>=3.2.1
