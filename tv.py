@@ -164,6 +164,10 @@ class CNTV(object):
 Program = namedtuple('Program', 'time, name')
 
 class Programs(dict, CNTV):
+    '''Dictionary of programs.
+    
+    Keys are made of date time object.
+    '''
 
     def __init__(self, channel, _date, *args):
         self.channel = channel
@@ -212,6 +216,13 @@ class Channel(dict):
         return dict.__getitem__(self, attr)
 
 class Channels(dict, CNTV):
+    '''Dictionary of channels.
+
+    Keys are made of channel code names.
+
+    >>> chans = Channels()
+    >>> cctv1 = chans['cctv1']
+    '''
 
     def __init__(self, *args):
         if args:

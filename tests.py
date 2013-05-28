@@ -14,7 +14,7 @@ class TVTest(unittest.TestCase):
         channel = self.channels['cctv5']
         for schedule in channel.schedule.iterweeklyschedules():
             for time, program in schedule.iteritems():
-                print time, program.name
+                self.assertEqual(time, program.time)
 
 if __name__ == '__main__':
     unittest.main()
