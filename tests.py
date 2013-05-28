@@ -11,7 +11,7 @@ class TVTest(unittest.TestCase):
         self.channels = tv.Channels()
 
     def test_schedule(self):
-        channel = self.channels['cctv2']
+        channel = self.channels['cctv5']
         for schedule in channel.schedule.iterweeklyschedules():
             for time, program in schedule.iteritems():
                 print time, program.name

@@ -111,25 +111,50 @@ class CNTV(object):
             Returns None on any error, to indicate that the caller
             should ignore this time of parse and continue its iteration.
         '''
-        node_playback = node_program = None
-        links = dd.findChildren('a')
-        # Programs already aired will have a link
-        # to the playback URL, resulting in two links
-        # in the dd node.
-        if len(links) > 1:
-            node_playback, node_program = links
-        else:
-            try:
-                node_program = links[0]
-            except IndexError:
-                return None
-        
-        program_details = node_program.text.split()
-        program_time_str = program_details.pop(0)
+        program_details_str = None
+
+        def decide():
+            Unknown = when_details_is_missing
+            has_links = ( len(dd.findChildren('a')) > 0)
+            if has_links:
+                return when_details_is_linked
+            else:
+                return when_details_is_plain_text
+            return Unknown
+
+        def when_details_is_missing():
+            return None
+
+        def when_details_is_linked():
+            node_playback = node_program = None
+            links = dd.findChildren('a')
+            # Programs already aired will have a link
+            # to the playback URL, resulting in two links
+            # in the dd node.
+            if len(links) > 1:
+                node_playback, node_program = links
+            else:
+                try:
+                    node_program = links[0]
+                except IndexError:
+                    return None
+            return node_program.text
+
+        def when_details_is_plain_text():
+            return dd.text.strip()
+
+        situation = decide()
+        program_details_str = situation()
+
+        if program_details_str is None:
+            return None
+
+        program_details_splitted = program_details_str.split()
+        program_time_str = program_details_splitted.pop(0)
         program_time = self.program_time_from_date_and_time_str(
             date_str, program_time_str
         )
-        program_name = ' '.join(program_details)
+        program_name = ' '.join(program_details_splitted)
         program = Program(
             time=program_time,
             name=program_name
